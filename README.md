@@ -47,7 +47,7 @@ If you don't like those, you can use the RG350M defaults by running: `/media/dat
 If you don't like any of those work, you can simply remove the /media/data/local/etc/init.d/S91alsaSettings file, reboot, and the operating system will go back to it's original defaults.
 
 ## Aside:
--OpenDingux (or at least the version I'm running on my RG350M) uses a similar method to save the "Volume" state.  This also uses an init script to save the volume state, but uses a different method.  It saves the state of the PCM level (volume buttons directly control the PCM level in alsamixer).  This function will continue to work, but runs before this script, so...this script will overwrite the PCM level.
+OpenDingux (or at least the version I'm running on my RG350M) uses a similar method to save the "Volume" state.  This also uses an init script to save the volume state, but uses a different method.  It saves and restors the state of the PCM level (volume buttons directly control the PCM level in alsamixer) on boot and shutdown.  This function will continue to work, but runs before this script, so...this script will overwrite the PCM level.
 
 ## Feedback:
 Let me know if it works for you and feel free to file issues or pull requests to add features or fix any bugs.
