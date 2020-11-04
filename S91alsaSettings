@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Simple script to load/store ALSA settings.
+# On the RG350 or the RG350M: Put this file in the /media/data/local/etc/init.d/ directory on your TF1/Internal SD Card.
+
+ALSACTL_STATEFILE=/usr/local/etc/asound.state
+VOLUME_DEVICE=default
+
+case "$1" in
+        start)  
+                if [ -f $ALSACTL_STATEFILE ]; then
+			echo "Loading Alsamixer config..."
+			/usr/sbin/alsactl -f $ALSACTL_STATEFILE restore
+		fi
+                ;;
+        stop)   
+                echo "Storing sound volume and alsamixer config..."
+		/usr/sbin/alsactl -f $ALSACTL_STATEFILE store
+                ;;
+        *)
+                echo "Usage: $0 {start|stop}"
+                exit 1
+esac
+
+exit $?
