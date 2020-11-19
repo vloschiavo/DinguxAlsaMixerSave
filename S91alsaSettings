@@ -1,24 +1,198 @@
 #!/bin/sh
 #
 # Simple script to load/store ALSA settings.
-# On the RG350 or the RG350M: Put this file in the /media/data/local/etc/init.d/ directory on your TF1/Internal SD Card.
+# On the RG350 or the RG350M: Put this file in the /media/data/local/etc/init.d/ directory on your TF1/Internal SD Card. And make it executable `chmod +x /media/data/local/etc/init.d/S91alsaSettings`
 
 ALSACTL_STATEFILE=/usr/local/etc/asound.state
-VOLUME_DEVICE=default
+ALSACTL_DEFAULT_STATEFILE=/usr/local/etc/asound-defaults.state
+ALSACTL_RG350_DEFAULT_STATEFILE=/usr/local/etc/asound-RG350M-defaults.state
 
 case "$1" in
         start)  
+		# This is run on system boot:
+		# Check for a personalized state file
                 if [ -f $ALSACTL_STATEFILE ]; then
 			echo "Loading Alsamixer config..."
+			# Load it!
 			/usr/sbin/alsactl -f $ALSACTL_STATEFILE restore
+		else
+			# There was no personalized state file.
+			# This is the first boot with this script installed and we should save the defaults of this device.
+			/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE store
 		fi
                 ;;
+
         stop)   
+		# Saves your current alsamixer settings to asound.state for next boot.
                 echo "Storing sound volume and alsamixer config..."
 		/usr/sbin/alsactl -f $ALSACTL_STATEFILE store
                 ;;
+
+	load-defaults)
+		if [ -f $ALSACTL_DEFAULT_STATEFILE ]; then
+			# Load the device default that we saved the first time this was run
+			# These settings should match the OS defaults for your device
+			/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE restore
+		else 
+			echo "No default file was found. You can try running this script with the load-rg350m option to try those defaults."
+			echo "If you don't like the rg350m defaults, you can delete the following files: $ALSACTL_STATEFILE and $ALSACTL_DEFAULT_STATEFILE; then reboot"
+		fi
+		;;
+
+	load-rg350m)
+		# If you have an RG350/M/P, you can load this version taken from an RG350M
+		# Check if the file exists, if not, create it.
+		if [ ! -f $ALSACTL_RG350_DEFAULT_STATEFILE ]; then
+			# Create the default state file - this is a copy from my RG350M
+			/bin/cat <<EOM >$ALSACTL_RG350_DEFAULT_STATEFILE
+state.VirMIDI {
+	control {
+	}
+}
+state.GCW0 {
+	control.1 {
+		iface MIXER
+		name 'Mic Volume'
+		value 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 5'
+			dbmin 0
+			dbmax 2000
+			dbvalue.0 0
+		}
+	}
+	control.2 {
+		iface MIXER
+		name 'Headphone Playback Volume'
+		value.0 25
+		value.1 25
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 31'
+			dbmin -2500
+			dbmax 600
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.3 {
+		iface MIXER
+		name 'PCM Capture Volume'
+		value.0 0
+		value.1 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 23'
+			dbmin 0
+			dbmax 2300
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.4 {
+		iface MIXER
+		name 'Line In Bypass Volume'
+		value.0 25
+		value.1 25
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 31'
+			dbmin -2500
+			dbmax 600
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.5 {
+		iface MIXER
+		name 'Headphone Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.6 {
+		iface MIXER
+		name 'Speakers Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.7 {
+		iface MIXER
+		name 'Line Out Source'
+		value PCM
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 PCM
+			item.1 'Line In'
+			item.2 Mic
+		}
+	}
+	control.8 {
+		iface MIXER
+		name 'Headphone Source'
+		value PCM
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 PCM
+			item.1 'Line In'
+			item.2 Mic
+		}
+	}
+	control.9 {
+		iface MIXER
+		name 'Capture Source'
+		value 'Line In'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 'Line In'
+			item.1 Mic
+		}
+	}
+	control.10 {
+		iface MIXER
+		name 'PCM Playback Volume'
+		value 7
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 31'
+			dbmin -9999999
+			dbmax 0
+			dbvalue.0 -2400
+		}
+	}
+}
+EOM
+		fi
+		# Use the file to restore defaults
+		/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE restore
+		;;
+		
         *)
-                echo "Usage: $0 {start|stop}"
+                echo "Usage: $0 {start|stop|load-defaults|load-rg350m}"
                 exit 1
 esac
 

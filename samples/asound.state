@@ -1,0 +1,140 @@
+state.VirMIDI {
+	control {
+	}
+}
+state.GCW0 {
+	control.1 {
+		iface MIXER
+		name 'Mic Volume'
+		value 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 5'
+			dbmin 0
+			dbmax 2000
+			dbvalue.0 0
+		}
+	}
+	control.2 {
+		iface MIXER
+		name 'Headphone Playback Volume'
+		value.0 14
+		value.1 14
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 31'
+			dbmin -2500
+			dbmax 600
+			dbvalue.0 -1100
+			dbvalue.1 -1100
+		}
+	}
+	control.3 {
+		iface MIXER
+		name 'PCM Capture Volume'
+		value.0 0
+		value.1 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 23'
+			dbmin 0
+			dbmax 2300
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.4 {
+		iface MIXER
+		name 'Line In Bypass Volume'
+		value.0 25
+		value.1 25
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 31'
+			dbmin -2500
+			dbmax 600
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.5 {
+		iface MIXER
+		name 'Headphone Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.6 {
+		iface MIXER
+		name 'Speakers Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.7 {
+		iface MIXER
+		name 'Line Out Source'
+		value PCM
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 PCM
+			item.1 'Line In'
+			item.2 Mic
+		}
+	}
+	control.8 {
+		iface MIXER
+		name 'Headphone Source'
+		value PCM
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 PCM
+			item.1 'Line In'
+			item.2 Mic
+		}
+	}
+	control.9 {
+		iface MIXER
+		name 'Capture Source'
+		value 'Line In'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 'Line In'
+			item.1 Mic
+		}
+	}
+	control.10 {
+		iface MIXER
+		name 'PCM Playback Volume'
+		value 12
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 31'
+			dbmin -9999999
+			dbmax 0
+			dbvalue.0 -1900
+		}
+	}
+}
