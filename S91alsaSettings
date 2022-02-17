@@ -33,7 +33,6 @@ case "$1" in
 			# Load the device default that we saved the first time this was run
 			# These settings should match the OS defaults for your device
 			/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE restore
-			/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE restore
 		else 
 			echo "No default file was found. You can try running this script with the load-rg350m option to try those defaults."
 			echo "If you don't like the rg350m defaults, you can delete the following files: $ALSACTL_STATEFILE and $ALSACTL_DEFAULT_STATEFILE; then reboot"
