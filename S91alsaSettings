@@ -8,13 +8,15 @@ ALSACTL_DEFAULT_STATEFILE=/usr/local/etc/asound-defaults.state
 ALSACTL_RG350_DEFAULT_STATEFILE=/usr/local/etc/asound-RG350M-defaults.state
 ALSACTL_SDCARD_CONFIF=/media/sdcard/alsactl
 
-if [ ! -d ${ALSACTL_SDCARD_CONFIF} ];
+if mount|grep -q /media/sdcard
+then
+  if [ ! -d ${ALSACTL_SDCARD_CONFIF} ];
 	mkdir -p "${ALSACTL_SDCARD_CONFIF}"
-fi
-if [ ! -f ${ALSACTL_SDCARD_CONFIF}/DEFAULT.txt ];
+  fi
+  if [ ! -f ${ALSACTL_SDCARD_CONFIF}/DEFAULT.txt ];
 	echo "" > "${ALSACTL_SDCARD_CONFIF}/DEFAULT.txt"
+  fi
 fi
-
 case "$1" in
         start)  
 		# This is run on system boot:
