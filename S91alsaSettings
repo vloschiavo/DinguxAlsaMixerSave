@@ -24,9 +24,8 @@ case "$1" in
 			# Load the device default that we saved the first time this was run
 			# These settings should match the OS defaults for your device
 			/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE restore
-		fi
 		# Check for a personalized state file without SDCARD config
-                if [ -f $ALSACTL_STATEFILE ] && [ ! -f "${ALSACTL_SDCARD_CONFIF}/DEFAULT" ]; then
+                elif [ -f $ALSACTL_STATEFILE ] && [ ! -f "${ALSACTL_SDCARD_CONFIF}/DEFAULT" ]; then
 			echo "Loading Alsamixer config..."
 			# Load it!
 			/usr/sbin/alsactl -f $ALSACTL_STATEFILE restore
