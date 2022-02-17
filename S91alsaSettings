@@ -6,12 +6,27 @@
 ALSACTL_STATEFILE=/usr/local/etc/asound.state
 ALSACTL_DEFAULT_STATEFILE=/usr/local/etc/asound-defaults.state
 ALSACTL_RG350_DEFAULT_STATEFILE=/usr/local/etc/asound-RG350M-defaults.state
+ALSACTL_SDCARD_CONFIF=/media/sdcard/alsactl
+
+if [ ! -d ${ALSACTL_SDCARD_CONFIF} ];
+	mkdir -p "${ALSACTL_SDCARD_CONFIF}"
+fi
+if [ ! -f ${ALSACTL_SDCARD_CONFIF}/DEFAULT.txt ];
+	echo "" > "${ALSACTL_SDCARD_CONFIF}/DEFAULT.txt"
+fi
 
 case "$1" in
         start)  
 		# This is run on system boot:
-		# Check for a personalized state file
-                if [ -f $ALSACTL_STATEFILE ]; then
+		# Check for a personalized state file with SDCARD confif
+		if [ -f $ALSACTL_STATEFILE ] && [ -f ${ALSACTL_SDCARD_CONFIF}/DEFAULT ]; then
+			mv ${ALSACTL_SDCARD_CONFIF}/DEFAULT ${ALSACTL_SDCARD_CONFIF}/DEFAULT.txt
+			# Load the device default that we saved the first time this was run
+			# These settings should match the OS defaults for your device
+			/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE restore
+		fi
+		# Check for a personalized state file without SDCARD config
+                if [ -f $ALSACTL_STATEFILE ] && [ ! -f "${ALSACTL_SDCARD_CONFIF}/DEFAULT" ]; then
 			echo "Loading Alsamixer config..."
 			# Load it!
 			/usr/sbin/alsactl -f $ALSACTL_STATEFILE restore
