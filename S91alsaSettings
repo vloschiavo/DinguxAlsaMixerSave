@@ -206,7 +206,7 @@ state.GCW0 {
 EOM
 		fi
 		# Use the file to restore defaults
-		/usr/sbin/alsactl -f $ALSACTL_DEFAULT_STATEFILE restore
+		/usr/sbin/alsactl -f $ALSACTL_RG350_DEFAULT_STATEFILE restore
 		;;
 		
         *)
